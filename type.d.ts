@@ -40,7 +40,7 @@ declare global {
     icon: ImageSourcePropType;
     name: string;
     price: number;
-    currency?: string;
+    currency: string;
     daysLeft: number;
   }
 
