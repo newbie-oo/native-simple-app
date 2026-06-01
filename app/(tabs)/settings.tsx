@@ -1,4 +1,5 @@
 import { useClerk } from "@clerk/expo";
+import { posthog } from "@/lib/posthog";
 import { useRouter } from "expo-router";
 import { styled } from "nativewind";
 import { Alert, Text, TouchableOpacity } from "react-native";
@@ -12,9 +13,11 @@ const Settings = () => {
 
     const handleSignOut = async () => {
         try {
+            posthog.capture("user_signed_out");
+            posthog.reset();
             await signOut();
             router.replace("/(auth)/sign-in");
-        } catch (error) {
+        } catch {
             Alert.alert(
                 "Sign out failed",
                 "Something went wrong while signing out. Please try again."
