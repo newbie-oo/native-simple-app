@@ -47,15 +47,19 @@ export default function SignUp() {
     if (error) return;
 
     if (signUp.status === "complete") {
-      posthog.identify(emailAddress, {
-        $set: { email: emailAddress },
-        $set_once: { sign_up_date: new Date().toISOString() },
-      });
-      posthog.capture("user_signed_up", { email: emailAddress });
-
       await signUp.finalize({
         navigate: ({ session, decorateUrl }) => {
           if (session?.currentTask) return;
+
+          const userId = session?.user?.id;
+          if (userId) {
+            posthog.identify(userId, {
+              $set: { email: emailAddress },
+              $set_once: { sign_up_date: new Date().toISOString() },
+            });
+            posthog.capture("user_signed_up", { email: emailAddress });
+          }
+
           const url = decorateUrl("/");
           router.replace(url as Href);
         },
