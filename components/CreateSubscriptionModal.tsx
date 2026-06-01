@@ -112,14 +112,19 @@ export default function CreateSubscriptionModal({
       color: pickUniqueColor(selectedCategory, existingColors),
     };
 
-    posthog.capture("subscription_created", {
-      subscription_name: name.trim(),
-      subscription_price: parsedPrice,
-      subscription_frequency: frequency,
-      subscription_category: selectedCategory,
-    })
-
     onCreate(subscription);
+
+    try {
+      posthog.capture("subscription_created", {
+        subscription_name: name.trim(),
+        subscription_price: parsedPrice,
+        subscription_frequency: frequency,
+        subscription_category: selectedCategory,
+      });
+    } catch {
+      // Analytics must never block the user flow.
+    }
+
     resetForm();
     onClose();
   };
