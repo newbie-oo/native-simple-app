@@ -1,6 +1,6 @@
 import SubscriptionCard from "@/components/SubscriptionCard";
-import { HOME_SUBSCRIPTIONS } from "@/constants/data";
 import "@/global.css";
+import { useSubscriptionStore } from "@/lib/subscription-store";
 import { styled } from "nativewind";
 import { useMemo, useState } from "react";
 import { FlatList, Pressable, Text, TextInput, View } from "react-native";
@@ -9,14 +9,15 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 const SafeAreaView = styled(RNSafeAreaView);
 
 const Subscriptions = () => {
+    const subscriptions = useSubscriptionStore((s) => s.subscriptions);
     const [query, setQuery] = useState("");
     const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null);
 
     const filteredSubscriptions = useMemo(() => {
         const normalizedQuery = query.trim().toLowerCase();
-        if (!normalizedQuery) return HOME_SUBSCRIPTIONS;
+        if (!normalizedQuery) return subscriptions;
 
-        return HOME_SUBSCRIPTIONS.filter((subscription) => {
+        return subscriptions.filter((subscription) => {
             const haystack = [
                 subscription.name,
                 subscription.category,
@@ -30,7 +31,7 @@ const Subscriptions = () => {
 
             return haystack.includes(normalizedQuery);
         });
-    }, [query]);
+    }, [query, subscriptions]);
 
     return (
         <SafeAreaView className="subs-screen">
