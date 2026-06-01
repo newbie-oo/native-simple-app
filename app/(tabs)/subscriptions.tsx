@@ -22,7 +22,7 @@ const Subscriptions = () => {
                 subscription.name,
                 subscription.category,
                 subscription.plan,
-                subscription.billing,
+                subscription.frequency,
                 subscription.status,
             ]
                 .filter(Boolean)

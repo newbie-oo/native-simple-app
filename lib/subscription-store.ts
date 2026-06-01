@@ -22,7 +22,7 @@ export function selectBalance(subscriptions: Subscription[]): {
 
   for (const sub of subscriptions) {
     if (sub.status === "active") {
-      amount += sub.billing === "Yearly" ? sub.price / 12 : sub.price;
+      amount += sub.frequency === "Yearly" ? sub.price / 12 : sub.price;
     }
 
     if (sub.renewalDate) {

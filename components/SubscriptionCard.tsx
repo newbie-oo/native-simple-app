@@ -3,7 +3,7 @@ import clsx from "clsx";
 import React from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 
-const SubscriptionCard = ({ name, price, currency, icon, billing, color, category, plan, renewalDate, expanded, onPress, paymentMethod, startDate, status }: SubscriptionCardProps) => {
+const SubscriptionCard = ({ name, price, currency, icon, frequency, color, category, plan, renewalDate, expanded, onPress, paymentMethod, startDate, status }: SubscriptionCardProps) => {
     return (
         <Pressable onPress={onPress} className={clsx('sub-card', expanded ? 'sub-card-expanded' : 'bg-card')} style={!expanded && color ? { backgroundColor: color } : undefined}>
             <View className="sub-head">
@@ -21,7 +21,7 @@ const SubscriptionCard = ({ name, price, currency, icon, billing, color, categor
 
                 <View className="sub-price-box">
                     <Text className="sub-price">{formatCurrency(price, currency)}</Text>
-                    <Text className="sub-billing">{billing}</Text>
+                    <Text className="sub-billing">{frequency}</Text>
                 </View>
             </View>
 

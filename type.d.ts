@@ -1,6 +1,8 @@
 import type { ImageSourcePropType } from "react-native";
 
 declare global {
+  type Frequency = "Monthly" | "Yearly";
+
   interface AppTab {
     name: string;
     title: string;
@@ -23,7 +25,7 @@ declare global {
     startDate?: string;
     price: number;
     currency?: string;
-    billing: string;
+    frequency: Frequency;
     renewalDate?: string;
     color?: string;
   }
