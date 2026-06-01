@@ -1,7 +1,7 @@
 import { useClerk } from "@clerk/expo";
 import { useRouter } from "expo-router";
 import { styled } from "nativewind";
-import { Text, TouchableOpacity } from "react-native";
+import { Alert, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView);
@@ -11,8 +11,15 @@ const Settings = () => {
     const router = useRouter();
 
     const handleSignOut = async () => {
-        await signOut();
-        router.replace("/(auth)/sign-in");
+        try {
+            await signOut();
+            router.replace("/(auth)/sign-in");
+        } catch (error) {
+            Alert.alert(
+                "Sign out failed",
+                "Something went wrong while signing out. Please try again."
+            );
+        }
     };
 
     return (

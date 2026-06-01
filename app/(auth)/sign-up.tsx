@@ -42,7 +42,8 @@ export default function SignUp() {
   };
 
   const handleVerify = async () => {
-    await signUp.verifications.verifyEmailCode({ code });
+    const { error } = await signUp.verifications.verifyEmailCode({ code });
+    if (error) return;
 
     if (signUp.status === "complete") {
       await signUp.finalize({

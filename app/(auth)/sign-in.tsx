@@ -23,24 +23,31 @@ export default function SignIn() {
 
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const isFetching = fetchStatus === "fetching";
   const canSubmit =
     emailAddress.trim().length > 0 && password.length > 0 && !isFetching;
 
   const handleSignIn = async () => {
-    const { error } = await signIn.password({ emailAddress, password });
+    setSubmitError(null);
 
-    if (error) return;
+    try {
+      const { error } = await signIn.password({ emailAddress, password });
 
-    if (signIn.status === "complete") {
-      await signIn.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) return;
-          const url = decorateUrl("/");
-          router.replace(url as Href);
-        },
-      });
+      if (error) return;
+
+      if (signIn.status === "complete") {
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) return;
+            const url = decorateUrl("/");
+            router.replace(url as Href);
+          },
+        });
+      }
+    } catch {
+      setSubmitError("Something went wrong. Please try again.");
     }
   };
 
@@ -127,6 +134,10 @@ export default function SignIn() {
                     {err.message}
                   </Text>
                 ))}
+
+                {submitError && (
+                  <Text className="auth-error">{submitError}</Text>
+                )}
 
                 <TouchableOpacity
                   className={clsx(
