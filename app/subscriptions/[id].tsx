@@ -1,5 +1,7 @@
+import { posthog } from "@/lib/posthog";
 import { Link, useLocalSearchParams } from 'expo-router';
 import { styled } from "nativewind";
+import { useEffect } from 'react';
 import { Text } from 'react-native';
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
@@ -7,6 +9,11 @@ const SafeAreaView = styled(RNSafeAreaView);
 
 const SubscriptionDetails = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
+
+    useEffect(() => {
+        posthog.capture("subscription_detail_viewed", { subscription_id: id });
+    }, [id]);
+
     return (
         <SafeAreaView className="flex-1 bg-background items-center justify-center">
             <Text className="text-foreground text-lg mb-4">

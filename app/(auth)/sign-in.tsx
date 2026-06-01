@@ -1,4 +1,5 @@
 import { useSignIn } from "@clerk/expo";
+import { posthog } from "@/lib/posthog";
 import { clsx } from "clsx";
 import { type Href, Link, useRouter } from "expo-router";
 import { styled } from "nativewind";
@@ -41,12 +42,23 @@ export default function SignIn() {
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) return;
+
+            const userId = session?.user?.id;
+            if (userId) {
+              posthog.identify(userId, {
+                $set: { email: emailAddress },
+                $set_once: { first_sign_in_date: new Date().toISOString() },
+              });
+              posthog.capture("user_signed_in", { email: emailAddress });
+            }
+
             const url = decorateUrl("/");
             router.replace(url as Href);
           },
         });
       }
-    } catch {
+    } catch (err) {
+      posthog.captureException(err, { $exception_source: "sign-in" });
       setSubmitError("Something went wrong. Please try again.");
     }
   };
