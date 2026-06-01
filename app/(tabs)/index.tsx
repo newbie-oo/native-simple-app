@@ -1,9 +1,9 @@
+import { useUser } from "@clerk/expo";
 import ListHeading from "@/components/ListHeading";
 import SubscriptionCard from "@/components/SubscriptionCard";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
-import { HOME_BALANCE, HOME_SUBSCRIPTIONS, HOME_USER, UPCOMING_SUBSCRIPTIONS } from "@/constants/data";
+import { HOME_BALANCE, HOME_SUBSCRIPTIONS, UPCOMING_SUBSCRIPTIONS } from "@/constants/data";
 import { icons } from "@/constants/icons";
-import images from "@/constants/images";
 import "@/global.css";
 import { formatCurrency } from "@/lib/utils";
 import dayjs from "dayjs";
@@ -15,7 +15,10 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function App() {
+    const { user } = useUser();
     const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<string | null>(null);
+
+    const displayName = user?.fullName ?? user?.primaryEmailAddress?.emailAddress ?? "User";
 
     return (
         <SafeAreaView className="flex-1 bg-background p-5">
@@ -23,8 +26,16 @@ export default function App() {
                 ListHeaderComponent={(<>
                     <View className="home-header">
                         <View className="home-user">
-                            <Image source={images.avatar} className="w-12 h-12 rounded-full" />
-                            <Text className="home-user-name">{HOME_USER.name}</Text>
+                            {user?.imageUrl ? (
+                                <Image source={{ uri: user.imageUrl }} className="w-12 h-12 rounded-full" />
+                            ) : (
+                                <View className="w-12 h-12 rounded-full bg-accent items-center justify-center">
+                                    <Text className="text-lg font-sans-bold text-background">
+                                        {displayName.charAt(0).toUpperCase()}
+                                    </Text>
+                                </View>
+                            )}
+                            <Text className="home-user-name">{displayName}</Text>
                         </View>
 
                         <Image source={icons.add} className="home-add-icon" />
