@@ -53,7 +53,45 @@ declare global {
 
   interface ListHeadingProps {
     title: string;
+    actionLabel?: string;
+    onActionPress?: () => void;
   }
+
+  interface WeeklyBar {
+    label: string;
+    amount: number;
+  }
+
+  interface HistoryEntry {
+    id: string;
+    icon: ImageSourcePropType;
+    name: string;
+    color?: string;
+    dateTime: string;
+    price: number;
+    currency?: string;
+    frequency: Frequency;
+  }
+
+  interface InsightsData {
+    monthLabel: string;
+    monthlyTotal: number;
+    currency: string;
+    weekly: WeeklyBar[];
+    peakIndex: number;
+    peakAmount: number;
+    trendPct: number;
+    history: HistoryEntry[];
+  }
+
+  interface InsightsBarChartProps {
+    weekly: WeeklyBar[];
+    peakIndex: number;
+    peakAmount: number;
+    currency?: string;
+  }
+
+  type HistoryCardProps = Omit<HistoryEntry, "id">;
 }
 
 export {};

@@ -21,6 +21,12 @@ export const formatSubscriptionDateTime = (value?: string): string => {
     : "Not provided";
 };
 
+export const formatHistoryDateTime = (value?: string): string => {
+  if (!value) return "Not provided";
+  const parsedDate = dayjs(value);
+  return parsedDate.isValid() ? parsedDate.format("MMMM D, HH:mm") : "Not provided";
+};
+
 export const formatStatusLabel = (value?: string): string => {
   if (!value) return "Unknown";
   return value.charAt(0).toUpperCase() + value.slice(1);
