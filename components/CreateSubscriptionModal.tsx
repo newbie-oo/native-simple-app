@@ -1,4 +1,5 @@
 import { icons } from "@/constants/icons";
+import { posthog } from "@/lib/posthog";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -47,8 +48,6 @@ function pickUniqueColor(category: Category, usedColors: Set<string>): string {
   const hue = Math.floor(Math.random() * 360);
   return `hsl(${hue}, 60%, 80%)`;
 }
-
-type Frequency = "Monthly" | "Yearly";
 
 interface CreateSubscriptionModalProps {
   visible: boolean;
@@ -104,7 +103,7 @@ export default function CreateSubscriptionModal({
       name: name.trim(),
       price: parsedPrice,
       currency: "USD",
-      billing: frequency,
+      frequency,
       status: "active",
       startDate: now.toISOString(),
       renewalDate: renewalDate.toISOString(),
@@ -114,6 +113,18 @@ export default function CreateSubscriptionModal({
     };
 
     onCreate(subscription);
+
+    try {
+      posthog.capture("subscription_created", {
+        subscription_name: name.trim(),
+        subscription_price: parsedPrice,
+        subscription_frequency: frequency,
+        subscription_category: selectedCategory,
+      });
+    } catch {
+      // Analytics must never block the user flow.
+    }
+
     resetForm();
     onClose();
   };
